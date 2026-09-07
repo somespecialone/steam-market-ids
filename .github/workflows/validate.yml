@@ -1,0 +1,50 @@
+name: Validate datasets
+
+on:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: 3.x
+
+      - name: Validate datasets
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          datasets = {
+              "item_names.json": int,
+              "market_bucket_groups.json": str,
+          }
+
+          def reject_duplicate_keys(pairs):
+              data = {}
+              for key, value in pairs:
+                  if key in data:
+                      raise ValueError(f"duplicate key {key!r}")
+                  data[key] = value
+              return data
+
+          for path in sorted(
+              path
+              for filename in datasets
+              for path in Path("data").rglob(filename)
+          ):
+              value_type = datasets[path.name]
+              with path.open(encoding="utf-8") as file:
+                  data = json.load(file, object_pairs_hook=reject_duplicate_keys)
+              if not isinstance(data, dict):
+                  raise ValueError(f"{path}: top-level value must be an object")
+              for key, value in data.items():
+                  if type(value) is not value_type:
+                      raise ValueError(
+                          f"{path}: {key!r} has {type(value).__name__} value; "
+                          f"expected {value_type.__name__}"
+                      )
+              print(f"{path}: {len(data)} entries")

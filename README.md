@@ -10,15 +10,15 @@ This is a storage repo of `Steam Market`-related identifiers.
 
 If you find some items missing, consider [contributing](#contributing).
 
-## Apps:
+## Apps
 
-- [x] [730/CS2](./data/CS2) (ex. CSGO).
+- [x] [730/CS2](./data/CS2).
 - [x] [440/TF2](./data/TF2).
 
 ## Structure
 
-* `item_names.json` - `<market_hash_name>:<item_name_id>` map.
-* `market_bucket_groups.json` - `<market_bucket_group_name>:<market_bucket_group_id>` map.
+- `item_names.json` - `<market_hash_name>:<item_name_id>` map.
+- `market_bucket_groups.json` - `<market_bucket_group_name>:<market_bucket_group_id>` map.
 
 ## Contributing
 
